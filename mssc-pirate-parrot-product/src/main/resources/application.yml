@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: mssc-pirate-parrot-product
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:  jdbc:mysql://127.0.0.1:3306/pirate_parrot_product_db?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: password
+  threads:
+    virtual:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username:
+      password:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: io.factorialsystems.msscpirateparrotproduct.repository
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

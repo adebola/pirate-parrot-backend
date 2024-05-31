@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="io.factorialsystems.msscpirateparrotproduct.repository.CategoryRepository">
+    <resultMap id="categoryResultMap" type="io.factorialsystems.msscpirateparrotproduct.model.Category">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="category_name" property="name" jdbcType="VARCHAR"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_on" property="createdOn" jdbcType="TIMESTAMP"/>
+        <result column="category_image_url" property="imageUrl" jdbcType="VARCHAR"/>
+        <result column="suspended" property="suspended" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="column_list">
+        id, category_name, created_on, created_by, category_image_url, suspended
+    </sql>
+
+    <select id="findAll" resultMap="categoryResultMap">
+        select
+        <include refid="column_list"/>
+        from category
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="categoryResultMap">
+        select
+        <include refid="column_list"/>
+        from category
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="io.factorialsystems.msscpirateparrotproduct.model.Category">
+        insert into category(category_name, category_image_url, created_by)
+        values(#{name}, #{imageUrl}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="io.factorialsystems.msscpirateparrotproduct.model.Category">
+        update category
+        <set>
+            <if test="name != null">category_name=#{name},</if>
+            <if test="imageUrl != null">category_image_url=#{imageUrl},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="suspend" parameterType="java.lang.String">
+        update category set suspended = true
+        where id = #{id}
+    </update>
+
+    <update id="unsuspend" parameterType="java.lang.String">
+        update category set suspended = false
+        where id = #{id}
+    </update>
+
+    <select id="search" parameterType="java.lang.String" resultMap="categoryResultMap">
+        select
+        <include refid="column_list"/>
+        from category
+        where category_name like CONCAT(#{search}, '%')
+    </select>
+
+    <select id="findByName" parameterType="java.lang.String" resultMap="categoryResultMap">
+        select
+        <include refid="column_list"/>
+        from category
+        where category_name = #{name}
+    </select>
+</mapper>
