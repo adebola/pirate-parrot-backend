@@ -24,7 +24,7 @@ class CategoryRepositoryTest {
     void findAll() {
         final Page<Category> all = categoryRepository.findAll();
         long count = all.size();
-        assertThat(count).isEqualTo(5);
+        assertThat(count).isEqualTo(6);
         log.info("Categories {}", all.getResult());
     }
 
@@ -53,7 +53,7 @@ class CategoryRepositoryTest {
 
         final Page<Category> all = categoryRepository.findAll();
         long count = all.stream().count();
-        assertThat(count).isEqualTo(8);
+        assertThat(count).isEqualTo(9);
         log.info("Categories {}", all.getResult());
     }
 
