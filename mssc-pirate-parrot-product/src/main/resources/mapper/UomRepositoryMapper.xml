@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="io.factorialsystems.msscpirateparrotproduct.repository.UomRepository">
+    <resultMap id="uomResultMap" type="io.factorialsystems.msscpirateparrotproduct.model.Uom">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_on" property="createdOn" jdbcType="TIMESTAMP"/>
+        <result column="suspended" property="suspended" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="column_list">
+        id, name, created_on, created_by, suspended
+    </sql>
+
+    <select id="findAll" resultMap="uomResultMap">
+        select
+        <include refid="column_list"/>
+        from uom
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="uomResultMap">
+        select
+        <include refid="column_list"/>
+        from uom
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="io.factorialsystems.msscpirateparrotproduct.model.Uom">
+        insert into uom(name, created_by)
+        values(#{name}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="io.factorialsystems.msscpirateparrotproduct.model.Uom">
+        update uom
+        <set>
+            <if test="name != null">name=#{name},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="suspend" parameterType="java.lang.String">
+        update uom set suspended = true
+        where id = #{id}
+    </update>
+
+    <update id="unsuspend" parameterType="java.lang.String">
+        update uom set suspended = false
+        where id = #{id}
+    </update>
+
+    <select id="search" parameterType="java.lang.String" resultMap="uomResultMap">
+        select
+        <include refid="column_list"/>
+        from uom
+        where name like CONCAT(#{search}, '%')
+    </select>
+
+    <select id="findByName" parameterType="java.lang.String" resultMap="uomResultMap">
+        select
+        <include refid="column_list"/>
+        from uom
+        where name = #{name}
+    </select>
+</mapper>
