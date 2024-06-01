@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: mssc-pirate-parrot-gateway
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username:
+      password:
+
+  session:
+    redis:
+      repository-type: default
+
+  threads:
+    virtual:
+      enabled: true
+
+  cloud:
+    gateway:
+      routes:
+        - id: verify
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/verify/**
+          filters:
+            - TokenRelay=
+            - SaveSession
+        - id: product
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/product/**
+          filters:
+            - TokenRelay=
+            - SaveSession
+        - id: angular
+          uri: http://localhost:9000/
+          predicates:
+            - Path=/**
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway:
+            provider: spring
+            client-id: client
+            client-secret: secret
+            scope:
+            - openid
+            - profile
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-authentication-method: client_secret_basic
+
+        provider:
+          spring:
+            issuer-uri: http://localhost:9000
