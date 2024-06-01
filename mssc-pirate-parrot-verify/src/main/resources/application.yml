@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: mssc-pirate-parrot-verify
+  threads:
+    virtual:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
