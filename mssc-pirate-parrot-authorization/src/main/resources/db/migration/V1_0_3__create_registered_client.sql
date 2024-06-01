@@ -1,0 +1,22 @@
+CREATE TABLE `registered_clients` (
+    `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
+    `client_id` varchar(36) NOT NULL,
+    `client_id_issued_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `client_secret` varchar(512) NOT NULL,
+    `client_authentication_method` varchar(64) NOT NULL,
+    `authorization_grant_types` varchar(256) NOT NULL,
+    `redirect_uris` varchar(256) NOT NULL,
+    `post_logout_redirect_uri` varchar(256) NOT NULL,
+    `scopes` varchar(64) NOT NULL,
+    `require_authorization_consent` bool NOT NULL DEFAULT FALSE,
+    `require_proof_key` bool NOT NULL DEFAULT FALSE,
+    `token_setting_id` INT NOT NULL,
+    `id_token_signature_algorithm` varchar(32) NOT NULL,
+    `reuse_refresh_tokens` bool NOT NULL DEFAULT TRUE,
+    `access_token_time_to_live` INT NOT NULL,
+    `refresh_token_time_to_live` INT NOT NULL,
+    `authorization_code_time_to_live` INT NOT NULL,
+    `oauth2_token_format` varchar(32) NOT NULL,
+    UNIQUE (`client_id`),
+    PRIMARY KEY (id)
+);

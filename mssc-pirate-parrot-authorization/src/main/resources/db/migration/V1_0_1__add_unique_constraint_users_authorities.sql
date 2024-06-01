@@ -1,0 +1,1 @@
+alter table users_authorities add constraint `idx_user_authority` UNIQUE (user_id, authority_id);

@@ -1,0 +1,3 @@
+alter table registered_clients drop column token_setting_id;
+alter table registered_clients rename column reuse_refresh_tokens to reuse_refresh_token;
+alter table registered_clients rename column post_logout_redirect_uri to post_logout_redirect_uris
