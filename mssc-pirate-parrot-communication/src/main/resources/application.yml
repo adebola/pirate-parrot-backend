@@ -1,0 +1,57 @@
+
+server:
+  port: 8084
+
+logging:
+    level:
+      org.springframework.web: INFO
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+  rabbitmq:
+#    host: localhost
+    port: 5672
+    username: user
+    password: password
+  banner:
+    location: classpath:banner.txt
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/parrot-communication
+      username: adebola
+      password: password
+  application:
+    name: mssc-pirate-parrot-communication
+  threads:
+    virtual:
+      enabled: true
+
+rabbitmq:
+  queue:
+    email:
+      name: communication-email-queue
+    sms:
+      name: communication-sms-queue
+  exchange:
+    name: communication-exchange
+  routing:
+    sms:
+      key: sms-routing
+    email:
+      key: email-routing
+
+aws:
+  accessKey:
+  secretKey:
+
+email:
+  secret: secret
+  from: noreply@factorialsystems.io
+
+
+
+
