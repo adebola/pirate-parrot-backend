@@ -1,8 +1,8 @@
 package io.factorialsystems.msscpirateparrotcommunication.service;
 
 import io.factorialsystems.msscpirateparrotcommunication.dto.EmailDTO;
-import io.factorialsystems.msscpirateparrotcommunication.model.Email;
 import io.factorialsystems.msscpirateparrotcommunication.model.Constant;
+import io.factorialsystems.msscpirateparrotcommunication.model.Email;
 import io.factorialsystems.msscpirateparrotcommunication.repository.EmailRepository;
 import io.factorialsystems.msscpirateparrotcommunication.repository.MailConstantsRepository;
 import jakarta.activation.DataHandler;
@@ -23,7 +23,6 @@ import software.amazon.awssdk.services.sesv2.model.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Properties;
 
 @Slf4j
@@ -43,9 +42,9 @@ public class SendMailService {
     private String mailFooter;
 
     // Send Mail without attachment, using AWS SES V2
-    public Optional<String> sendMail(EmailDTO dto) {
+    public void sendMail(EmailDTO dto) {
         if (!checkEmail(dto)) {
-            return Optional.empty();
+            return;
         }
 
         final Body body;
@@ -103,17 +102,15 @@ public class SendMailService {
 
             final Email save = emailRepository.save(email);
 
-            return Optional.of(save.getId());
         } catch (SesV2Exception e) {
             log.error("Error sending email without attachment {}", e.getMessage());
         }
-
-        return Optional.empty();
     }
 
-    public Optional<String> sendMailWithAttachment(EmailDTO dto, MultipartFile file) {
+    // Send Mail with attachment, using AWS SES V2
+    public void sendMailWithAttachment(EmailDTO dto, MultipartFile file) {
         if (!checkEmail(dto)) {
-            return Optional.empty();
+            return;
         }
 
         try {
@@ -131,15 +128,12 @@ public class SendMailService {
 
             final Email save = emailRepository.save(email);
 
-            return Optional.of(save.getId());
         } catch (Exception e) {
             log.error("Error sending email with attachment {}", e.getMessage());
-
         }
-
-        return Optional.empty();
     }
 
+    // Handle the creation of the Raw Email Request
     private SendEmailRequest createRawEmailRequest(EmailDTO emailDTO, MultipartFile multipartFile) throws MessagingException, IOException {
         // Create a new Session object
         Properties props = new Properties();
@@ -152,28 +146,7 @@ public class SendMailService {
         message.setSubject(emailDTO.getSubject());
 
         // Create a multipart/alternative child container
-        MimeMultipart msgBody = new MimeMultipart("alternative");
-
-        // Create a wrapper for the HTML and text parts
-        MimeBodyPart wrap = new MimeBodyPart();
-
-        final String footer = getMailFooter();
-        final MimeBodyPart textPart = new MimeBodyPart();
-
-        // Define the text part
-        if (emailDTO.getHtmlBody() == null) {
-            final String bodyText = emailDTO.getTextBody() + "\n\n\n\n\n\n\n\n\n\n\n" + footer;
-            textPart.setContent(bodyText, "text/plain");
-        } else {
-            final String bodyHtml = emailDTO.getHtmlBody() + "<br><br><br><br><br><br><br><small>" + footer + "</small>";
-            textPart.setContent(bodyHtml, "text/html");
-        }
-
-        // Add the text and HTML parts to the child container
-        msgBody.addBodyPart(textPart);
-
-        // Add the child container to the wrapper object
-        wrap.setContent(msgBody);
+        final MimeBodyPart wrap = getMimeBodyPart(emailDTO);
 
         // Create a multipart/mixed parent container
         MimeMultipart msg = new MimeMultipart("mixed");
@@ -208,6 +181,40 @@ public class SendMailService {
                 .build();
     }
 
+    private MimeBodyPart getMimeBodyPart(EmailDTO emailDTO) throws MessagingException {
+        MimeMultipart msgBody = new MimeMultipart("alternative");
+
+        // Create a wrapper for the HTML and text parts
+        MimeBodyPart wrap = new MimeBodyPart();
+
+        final MimeBodyPart textPart = getBodyPart(emailDTO);
+
+        // Add the text and HTML parts to the child container
+        msgBody.addBodyPart(textPart);
+
+        // Add the child container to the wrapper object
+        wrap.setContent(msgBody);
+        return wrap;
+    }
+
+    private MimeBodyPart getBodyPart(EmailDTO emailDTO) throws MessagingException {
+        final String footer = getMailFooter();
+        final MimeBodyPart textPart = new MimeBodyPart();
+
+        // Define the text part
+        if (emailDTO.getHtmlBody() == null) {
+            final String bodyText = emailDTO.getTextBody() + "\n\n\n\n\n\n\n\n\n\n\n" + footer;
+            textPart.setContent(bodyText, "text/plain");
+        } else {
+            final String bodyHtml = emailDTO.getHtmlBody() + "<br><br><br><br><br><br><br><small>" + footer + "</small>";
+            textPart.setContent(bodyHtml, "text/html");
+        }
+        return textPart;
+    }
+
+    // Sending mails are Authentication free since they will be sent asynchronously
+    // The user context will not be loaded, hence we protect the endpoint with a secret
+    // Mail Requests are typically sent via RabbitMQ messages
     private Boolean checkEmail(EmailDTO dto) {
         if (!mailSecret.equals(dto.getSecret())) {
             log.error("Invalid Secret {} submitted, sending Mail", dto.getSecret());

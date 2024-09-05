@@ -3,8 +3,10 @@ server:
   port: 8084
 
 logging:
-    level:
-      org.springframework.web: INFO
+  pattern:
+    console: "%green(%d{HH:mm:ss}) %yellow([%t]) %blue(%-5level) %magenta(%logger{36}) - %msg%n"
+  level:
+    org.springframework.web: INFO
 
 spring:
   security:
@@ -44,13 +46,14 @@ rabbitmq:
     email:
       key: email-routing
 
-aws:
-  accessKey:
-  secretKey:
-
 email:
   secret: secret
   from: noreply@factorialsystems.io
+
+aws:
+    accessKeyId: ${AWS_ACCESS_KEY_ID}
+    secretKey: ${AWS_SECRET_KEY}
+
 
 
 

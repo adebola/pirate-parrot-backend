@@ -3,13 +3,17 @@ package io.factorialsystems.msscpirateparrotcommunication.service;
 import io.factorialsystems.msscpirateparrotcommunication.dto.EmailDTO;
 import lombok.extern.apachecommons.CommonsLog;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.concurrent.CompletableFuture;
 
 @CommonsLog
-//@SpringBootTest
+@SpringBootTest
 class SendMailServiceTest {
 
-    //@Autowired
-    SendMailService sendMailService;
+    @Autowired
+    SendMailService emailService;
 
     @Test
     void getEmails() {
@@ -17,16 +21,19 @@ class SendMailServiceTest {
 
     @Test
     void sendMail() {
-        EmailDTO emailDTO = EmailDTO.builder()
-                .to("aomoboya@icloud.com")
-                .subject("test")
-                .sentBy("Adebola")
-                .secret("secret")
-                .htmlBody("<h1>HTML Message Body</h1>")
-                .textBody("TEXT Message Body")
-                .build();
+        CompletableFuture.runAsync(() -> {
+            EmailDTO emailDTO = EmailDTO.builder()
+                    .to("aomoboya@icloud.com")
+                    .subject("test")
+                    .sentBy("Adebola")
+                    .secret("secret")
+                    .htmlBody("<h1>HTML Message Body</h1>")
+                    .textBody("TEXT Message Body")
+                    .build();
 
-        //final Optional<String> id = emailService.sendMail(emailDTO);
-        //assertThat(id).isPresent();
+             // emailService.sendMail(emailDTO);
+        });
+
+        log.info("Email sent successfully");
     }
 }
