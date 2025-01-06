@@ -29,18 +29,18 @@ public class ApplicationUser {
     private Set<UserAuthority> authorities;
 
     public static ApplicationUser create(String userName, String firstName, String lastName, String email, String password,  Set<UserAuthority> authorities) {
-        ApplicationUser a = new ApplicationUser();
-        a.id = UUID.randomUUID().toString();
-        a.userName = userName;
-        a.firstName = firstName;
-        a.lastName = lastName;
-        a.email = email;
-        a.enabled = false;
-        a.locked = true;
-        a.password = password;
-        a.authorities = authorities;
+        ApplicationUser au = new ApplicationUser();
+        au.id = UUID.randomUUID().toString();
+        au.userName = userName;
+        au.firstName = firstName;
+        au.lastName = lastName;
+        au.email = email;
+        au.enabled = false;
+        au.locked = true;
+        au.password = password;
+        au.authorities = authorities;
 
-        return a;
+        return au;
     }
 
     public UserDetails toUserDetails() {

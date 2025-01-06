@@ -28,7 +28,7 @@
         <result column="enabled" property="enabled" jdbcType="BOOLEAN"/>
         <result column="locked" property="locked" jdbcType="BOOLEAN"/>
         <result column="created_on" property="createdOn" jdbcType="TIMESTAMP"/>
-        <collection column="userAuthority" property="authorities" ofType="io.factorialsystems.msscpirateparrotauthorization.model.UserAuthority" resultMap="authorityResultMap"/>
+        <collection column="authorities" property="authorities" ofType="io.factorialsystems.msscpirateparrotauthorization.model.UserAuthority" resultMap="authorityResultMap"/>
     </resultMap>
 
     <sql id="short_column_list">
@@ -48,8 +48,8 @@
     <select id="findById" parameterType="java.lang.String" resultMap="userResultMap">
         select <include refid="long_column_list"/>
         from users as u
-        LEFT JOIN users_authorities us ON u.id = us.user_id
-        LEFT JOIN authorities a ON us.authority_id = a.id
+        LEFT JOIN users_authorities ua ON u.id = ua.user_id
+        LEFT JOIN authorities a ON ua.authority_id = a.id
         WHERE u.id = #{id}
     </select>
 

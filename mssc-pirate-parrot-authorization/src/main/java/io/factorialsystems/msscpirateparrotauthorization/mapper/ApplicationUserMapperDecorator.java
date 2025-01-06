@@ -44,4 +44,14 @@ public class ApplicationUserMapperDecorator implements ApplicationUserMapper{
 
         return applicationUser;
     }
+
+    @Override
+    public ApplicationUserDTO toDtoSlim(ApplicationUser applicationUser) {
+        return mapper.toDtoSlim(applicationUser);
+    }
+
+    @Override
+    public ApplicationUserDTO toDtoFat(ApplicationUser applicationUser) {
+        return mapper.toDtoFat(applicationUser);
+    }
 }

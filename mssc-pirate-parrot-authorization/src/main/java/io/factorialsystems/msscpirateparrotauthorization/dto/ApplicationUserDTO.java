@@ -2,6 +2,7 @@ package io.factorialsystems.msscpirateparrotauthorization.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,9 @@ import java.util.Set;
 @Setter
 @ToString
 public class ApplicationUserDTO {
+    @Null
+    private String id;
+
     @NotEmpty
     private String userName;
 

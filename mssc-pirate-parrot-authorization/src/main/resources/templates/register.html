@@ -1,41 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Please Register</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-
 <div class="login-page">
     <div class="form">
         <h1>Pirate Parrot Authentication Server</h1>
         <h2>Please Register</h2>
-        <div class="error" th:if="${param.error}">
-            Invalid username and password.
-        </div>
-        <div class="error" th:if="${param.logout}">
-            You have been logged out.
-        </div>
-        <form class="login-form" th:action="@{/register}" method="post">
+<!--        <div class="error" th:if="${param.error}">-->
+<!--            Invalid username and password.-->
+<!--        </div>-->
+<!--        <div class="error" th:if="${param.logout}">-->
+<!--            You have been logged out.-->
+<!--        </div>-->
+
+        <form class="login-form" action="#" method="POST" th:action="@{/register}">
             <div>
-                <input type="text" name="userName" placeholder="Username"/>
+                <input type="text" id="userName" name="userName" placeholder="Username" required />
             </div>
             <div>
-                <input type="text" name="firstName" placeholder="FirstName"/>
+                <input type="text" id="firstName" name="firstName" placeholder="FirstName" required />
             </div>
             <div>
-                <input type="text" name="lastName" placeholder="LastName"/>
+                <input type="text" id="lastName" name="lastName" placeholder="LastName" required />
             </div>
             <div>
-                <input type="email" name="email" placeholder="Email"/>
+                <input type="email" id="email" name="email" placeholder="Email" required />
             </div>
             <div>
-                <input type="password" name="password" placeholder="Password"/>
+                <input type="password" id="password" name="password" placeholder="Password" required />
             </div>
             <div>
-                <input type="password" name="matchingPassword" placeholder="Confirm Password"/>
+                <input type="password" id="matchingPassword" name="matchingPassword" placeholder="Confirm Password" required />
             </div>
             <input class="button" type="submit" value="Register"/>
         </form>
@@ -43,5 +46,6 @@
         <a th:href="@{/login}">Login</a>
     </div>
 </div>
+
 </body>
 </html>

@@ -1,12 +1,15 @@
-
 server:
   port: 9000
 
 logging:
+  pattern:
+    console: "%green(%d{HH:mm:ss}) %yellow([%t]) %blue(%-5level) %magenta(%logger{36}) - %msg%n"
   level:
-    org.springframework.security: trace
+    org.springframework.web: TRACE
 
 spring:
+  banner:
+    location: classpath:banner.txt
   application:
     name: mssc-pirate-parrot-authorization
   jpa:
@@ -30,7 +33,14 @@ spring:
     redis:
       time-to-live: 60000
 
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: io.factorialsystems.msscpirateparrotauthorization.repository
+
+pirate-parrot:
+  config:
+    allowed-origins:
+      - http://localhost:4200
+      - http://localhost:8080
 

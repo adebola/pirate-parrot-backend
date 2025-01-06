@@ -23,4 +23,28 @@ public interface ApplicationUserMapper {
             @Mapping(target = "authorities", ignore = true)
     })
     ApplicationUser toEntity(ApplicationUserDTO applicationUserDto);
+
+    @Mappings({
+            @Mapping(source = "userName", target = "userName"),
+            @Mapping(source = "firstName", target = "firstName"),
+            @Mapping(source = "lastName", target = "lastName"),
+            @Mapping(source = "email", target = "email"),
+            @Mapping(source = "password", target = "password"),
+            @Mapping(source = "enabled", target = "enabled"),
+            @Mapping(source = "locked", target = "locked"),
+            @Mapping(source = "id", target = "id"),
+    })
+    ApplicationUserDTO toDtoSlim(ApplicationUser applicationUser);
+
+    @Mappings({
+            @Mapping(source = "userName", target = "userName"),
+            @Mapping(source = "firstName", target = "firstName"),
+            @Mapping(source = "lastName", target = "lastName"),
+            @Mapping(source = "email", target = "email"),
+            @Mapping(source = "password", target = "password"),
+            @Mapping(source = "enabled", target = "enabled"),
+            @Mapping(source = "locked", target = "locked"),
+            @Mapping(source = "id", target = "id"),
+    })
+    ApplicationUserDTO toDtoFat(ApplicationUser applicationUser);
 }
