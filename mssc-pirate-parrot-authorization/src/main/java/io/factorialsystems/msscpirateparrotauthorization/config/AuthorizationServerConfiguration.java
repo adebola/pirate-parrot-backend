@@ -2,7 +2,6 @@ package io.factorialsystems.msscpirateparrotauthorization.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
@@ -110,12 +109,14 @@ public class AuthorizationServerConfiguration {
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+
         RSAKey rsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
         JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+        //return new ImmutableJWKSet<>(jwkSet);
     }
 
     private static KeyPair generateRsaKey() {
@@ -140,12 +141,6 @@ public class AuthorizationServerConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:9000") // Ensure this is correct
-                .build();
-    }
 
     @Bean
     OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
@@ -158,4 +153,11 @@ public class AuthorizationServerConfiguration {
             }
         };
     }
+
+    @Bean
+	public AuthorizationServerSettings authorizationServerSettings(AuthorizationProperties properties) {
+		return AuthorizationServerSettings.builder()
+				.issuer(properties.getLocation())
+				.build();
+	}
 }

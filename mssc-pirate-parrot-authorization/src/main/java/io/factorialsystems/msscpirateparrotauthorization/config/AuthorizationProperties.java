@@ -12,5 +12,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "pirate-parrot.config")
 public class AuthorizationProperties {
+    private String location;
     private List<String> allowedOrigins;
+
 }

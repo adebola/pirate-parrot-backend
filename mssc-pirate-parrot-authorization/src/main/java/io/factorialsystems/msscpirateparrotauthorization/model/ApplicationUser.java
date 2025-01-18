@@ -46,7 +46,7 @@ public class ApplicationUser {
     public UserDetails toUserDetails() {
         final Set<GrantedAuthority> grantedAuthorities = this.authorities
                 .stream()
-                .map(userUserAuthority -> new SimpleGrantedAuthority(userUserAuthority.getAuthority()))
+                .map(userAuthority -> new SimpleGrantedAuthority(userAuthority.getAuthority()))
                 .collect(Collectors.toSet());
 
         return new User (

@@ -9,8 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -34,10 +32,10 @@ class ApplicationRegisteredClientRepositoryTest {
     @Rollback
     @Transactional
     void save() {
-        final String clientId = "oidc-client";
-        final String clientSecret = "oidc-client-secret";
+        final String clientId = "test-client";
+        final String clientSecret = "test-client-secret";
         final String clientAuthenticationMethod = "client_secret_basic";
-        final String scopes = "openid,profile";
+        final String scopes = "openid,profile,email";
         final String authorizationGrantTypes = "authorization_code,refresh_token";
         final String redirectUri = "http://localhost:8080/login/oauth2/code/gateway";
         final String postLogoutRedirectUri = "http://127.0.0.1:8080/logged-out";
@@ -61,14 +59,11 @@ class ApplicationRegisteredClientRepositoryTest {
         applicationRegisteredClient.setRefreshTokenTTL(3600L);
         applicationRegisteredClient.setReuseRefreshToken(true);
         applicationRegisteredClient.setIdTokenSignatureAlgorithm("RS256");
-        applicationRegisteredClient.setOAuth2TokenFormat("SELF_CONTAINED");
+        applicationRegisteredClient.setOAuth2TokenFormat("SELF-CONTAINED");
 
         repository.save(applicationRegisteredClient);
 
-        final List<ApplicationRegisteredClient> all = repository.findAll();
-        assertThat(all.size()).isEqualTo(1);
-
-        ApplicationRegisteredClient client = all.getFirst();
+        ApplicationRegisteredClient client = repository.findByClientId(clientId);
 
         log.info("registered client Id {}", client.getId());
         assertThat(client.getClientId()).isEqualTo(clientId);

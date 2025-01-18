@@ -22,8 +22,8 @@ DROP TABLE IF EXISTS `authorities`;
 
 CREATE TABLE `authorities` (
     `id` varchar(36) NOT NULL DEFAULT (UUID()),
-    `userAuthority` varchar(64) NOT NULL,
-    UNIQUE (userAuthority),
+    `authority` varchar(64) NOT NULL,
+    UNIQUE (authority),
     PRIMARY KEY (id)
 );
 

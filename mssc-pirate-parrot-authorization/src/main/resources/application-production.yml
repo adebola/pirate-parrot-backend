@@ -1,5 +1,6 @@
 server:
   port: 9000
+  forward-headers-strategy: native
   servlet:
     context-path: /auth
 
@@ -19,16 +20,16 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:  jdbc:mysql://127.0.0.1:3306/pirate_parrot_authorization_db?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-    username: root
-    password: password
+    url:
+    username:
+    password:
   threads:
     virtual:
       enabled: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host:
+      port:
       username:
       password:
   cache:
@@ -43,6 +44,5 @@ mybatis:
 pirate-parrot:
   config:
     allowed-origins:
-      - http://localhost:4200
-    location: http://localhost:9000/auth
-
+      - https://pp-admin-fd160.web.app
+    location: https://pp.factorialsystems.net/auth

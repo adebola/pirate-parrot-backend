@@ -31,6 +31,9 @@ public class JpaRegisteredClientService implements RegisteredClientRepository {
     private final ApplicationRegisteredClientRepository repository;
 
     private static final String DEFAULT_AUTHENTICATION_METHOD = "client_secret_basic";
+    private static final Long DEFAULT_ACCESS_TOKEN_TTL = 300_000L; // 5 minutes
+    private static final Long DEFAULT_REFRESH_TOKEN_TTL = 3_600_000L; // 1 hour
+    private static final Long DEFAULT_AUTHORIZATION_CODE_TTL = 30_00L; // 30 seconds
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -67,6 +70,7 @@ public class JpaRegisteredClientService implements RegisteredClientRepository {
         applicationRegisteredClient.setClientAuthenticationMethod(
                 clientAuthenticationMethods.isEmpty() ? DEFAULT_AUTHENTICATION_METHOD : clientAuthenticationMethods.toArray()[0].toString()
         );
+
         applicationRegisteredClient.setScopes(String.join(", ", registeredClient.getScopes()));
         applicationRegisteredClient.setAuthorizationGrantTypes(
                 String.join(",", registeredClient.getAuthorizationGrantTypes()
@@ -87,29 +91,12 @@ public class JpaRegisteredClientService implements RegisteredClientRepository {
             applicationRegisteredClient.setRequireProofKey(registeredClient.getClientSettings().isRequireProofKey());
         }
 
-        // Token Settings
         applicationRegisteredClient.setReuseRefreshToken(true);
         applicationRegisteredClient.setIdTokenSignatureAlgorithm("RS256");
         applicationRegisteredClient.setOAuth2TokenFormat("self_contained");
-
-
-//        final TokenSettings tokenSettings = registeredClient.getTokenSettings();
-//
-//        if (tokenSettings == null) {
-//            applicationRegisteredClient.setAccessTokenTTL(86400L);
-//            applicationRegisteredClient.setAuthorizationCodeTTL(3600L);
-//            applicationRegisteredClient.setRefreshTokenTTL(3600L);
-//            applicationRegisteredClient.setReuseRefreshToken(true);
-//            applicationRegisteredClient.setIdTokenSignatureAlgorithm("RS256");
-//            applicationRegisteredClient.setOAuth2TokenFormat("self_contained");
-//        } else {
-//            applicationRegisteredClient.setAccessTokenTTL(tokenSettings.getAccessTokenTimeToLive().toMillis());
-//            applicationRegisteredClient.setAuthorizationCodeTTL(tokenSettings.getAuthorizationCodeTimeToLive().toMillis());
-//            applicationRegisteredClient.setRefreshTokenTTL( tokenSettings.getRefreshTokenTimeToLive().toMillis());
-//            applicationRegisteredClient.setIdTokenSignatureAlgorithm(tokenSettings.getIdTokenSignatureAlgorithm().getName());
-//            applicationRegisteredClient.setOAuth2TokenFormat(tokenSettings.getAccessTokenFormat().getValue());
-//            applicationRegisteredClient.setReuseRefreshToken(tokenSettings.isReuseRefreshTokens());
-//        }
+        applicationRegisteredClient.setAccessTokenTTL(DEFAULT_ACCESS_TOKEN_TTL);
+        applicationRegisteredClient.setAuthorizationCodeTTL(DEFAULT_AUTHORIZATION_CODE_TTL);
+        applicationRegisteredClient.setRefreshTokenTTL(DEFAULT_REFRESH_TOKEN_TTL);
 
       return applicationRegisteredClient;
     }
