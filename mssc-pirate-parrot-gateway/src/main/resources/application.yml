@@ -5,7 +5,7 @@ logging:
   pattern:
     console: "%green(%d{HH:mm:ss}) %yellow([%t]) %blue(%-5level) %magenta(%logger{36}) - %msg%n"
   level:
-    org.springframework.web: trace
+    org.springframework.web: DEBUG
 
 spring:
   banner:
@@ -43,10 +43,6 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path=/api/v1/communication/**
-        - id: send
-          uri: http://localhost:8084
-          predicates:
-            - Path=/api/v1/send/**
         - id: security
           uri: http://localhost:9000
           predicates:
