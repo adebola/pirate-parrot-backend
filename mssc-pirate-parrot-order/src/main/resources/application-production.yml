@@ -1,0 +1,45 @@
+server:
+  port: 8083
+
+#loki_uri: http://localhost:3100/loki/api/v1/push
+#
+#logging:
+#  pattern:
+#    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+logging:
+  pattern:
+    console: "%green(%d{HH:mm:ss}) %yellow([%t]) %blue(%-5level) %magenta(%logger{36}) - %msg%n"
+  level:
+    org.springframework.web: DEBUG
+
+spring:
+  banner:
+    location: classpath:banner.txt
+  application:
+    name: order-service
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+  threads:
+    virtual:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri:
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: io.factorialsystems.msscpirateparrotorder.repository
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

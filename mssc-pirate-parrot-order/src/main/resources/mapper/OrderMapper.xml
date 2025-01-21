@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="io.factorialsystems.msscpirateparrotorder.repository.OrderRepository">
+    <resultMap id="orderResultMap" type="io.factorialsystems.msscpirateparrotorder.model.RawOrder">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="order_date" property="orderDate" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER"/>
+        <result column="total_price" property="totalPrice" jdbcType="DECIMAL"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="order_shipment_id" property="orderShipmentId" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="shipment_status" property="shipmentStatus" jdbcType="VARCHAR"/>
+        <result column="order_item_id" property="orderItemId" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="variant" property="productVariant" jdbcType="VARCHAR"/>
+        <result column="variant_option" property="productVariantOption" jdbcType="VARCHAR"/>
+        <result column="uom" property="productUom" jdbcType="VARCHAR"/>
+        <result column="unit_price" property="unitPrice" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="discount" property="discount" jdbcType="DECIMAL"/>
+        <result column="subtotal_price" property="subTotalPrice" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <resultMap id="leanOrderResultMap" type="io.factorialsystems.msscpirateparrotorder.model.LeanOrder">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="order_date" property="orderDate" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER"/>
+        <result column="total_price" property="totalPrice" jdbcType="DECIMAL"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="order_shipment_id" property="orderShipmentId" jdbcType="VARCHAR"/>
+        <result column="address" property="orderShipmentAddress" jdbcType="VARCHAR"/>
+        <result column="shipment_status" property="orderShipmentStatus" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="orderItemResultMap" type="io.factorialsystems.msscpirateparrotorder.model.OrderItem">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="variant" property="variant" jdbcType="VARCHAR"/>
+        <result column="variant_option" property="variantOption" jdbcType="VARCHAR"/>
+        <result column="uom" property="uom" jdbcType="VARCHAR"/>
+        <result column="unit_price" property="unitPrice" jdbcType="DECIMAL"/>
+        <result column="quantity"  property="quantity" jdbcType="INTEGER"/>
+        <result column="discount" property="discount" jdbcType="DECIMAL"/>
+        <result column="subtotal_price" property="subTotalPrice" jdbcType="DECIMAL"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="orderShipmentResultMap" type="io.factorialsystems.msscpirateparrotorder.model.OrderShipment">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="order_long_column_list">
+        o.id,
+        o.order_date,
+        o.order_status,
+        o.total_price,
+        o.user_id,
+        o.user_name,
+        o.order_shipment_id,
+        o.created_by,
+        os.address,
+        os.shipment_status,
+        oi.id as order_item_id,
+        oi.product_id,
+        oi.product_name,
+        oi.variant,
+        oi.variant_option,
+        oi.uom,
+        oi.unit_price,
+        oi.quantity,
+        oi.discount,
+        oi.subtotal_price
+        FROM `order` o
+                 left join order_item oi on o.id = oi.order_id
+                 inner join order_shipment os on o.order_shipment_id = os.id
+    </sql>
+
+    <sql id="order_short_column_list">
+        o.id,
+        o.order_date,
+        o.order_status,
+        o.total_price,
+        o.user_id,
+        o.user_name,
+        o.order_shipment_id,
+        o.created_by,
+        os.address,
+        os.shipment_status
+        FROM `order` o
+                 inner join order_shipment os on o.order_shipment_id = os.id
+    </sql>
+
+    <sql id="order_item_column_list">
+        id,
+        product_id,
+        product_name,
+        variant,
+        variant_option,
+        uom,
+        unit_price,
+        quantity,
+        discount,
+        subtotal_price,
+        order_id
+        from order_item
+    </sql>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="orderResultMap">
+        select
+        <include refid="order_long_column_list"/>
+        where o.id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="leanOrderResultMap">
+        select
+        <include refid="order_short_column_list"/>
+    </select>
+
+    <select id="save" parameterType="io.factorialsystems.msscpirateparrotorder.model.Order" resultType="java.lang.String">
+        SET @orderShipmentId = UUID();
+        SET @orderId = UUID();
+        insert into `order_shipment`(id, address) values(@orderShipmentId, #{orderShipment.address});
+        insert into `order` (id, total_price, user_id, user_name, created_by, order_shipment_id)
+        values(@orderId, #{totalPrice}, #{userId}, #{userName}, #{createdBy}, @orderShipmentId);
+
+        insert into `order_item` (product_id, unit_price, quantity, discount, subtotal_price, variant, variant_option, uom, product_name, order_id)
+        values
+        <foreach item="item" index="index" collection="orderItems"  separator=",">
+            (#{item.productId}, #{item.unitPrice}, #{item.quantity}, #{item.discount}, #{item.subTotalPrice}, #{item.variant}, #{item.variantOption}, #{item.uom}, #{item.productName}, @orderId)
+        </foreach>;
+
+        SELECT @orderId from dual;
+    </select>
+
+    <select id="findOrderItemsByOrderId" resultMap="orderItemResultMap">
+        select
+        <include refid="order_item_column_list"/>
+        where order_id = #{id}
+    </select>
+</mapper>
