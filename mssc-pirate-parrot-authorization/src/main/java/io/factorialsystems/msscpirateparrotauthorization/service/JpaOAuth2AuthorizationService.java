@@ -79,7 +79,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
         Optional<Authorization> result;
         if (tokenType == null) {
-            log.info("Finding Authorization By Token_NoTokenType: {}", token);
+            log.info("Finding Authorization By Token_NOTOKEN: {}", token);
             result = this.authorizationRepository.findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValue(token);
         } else if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
             log.info("Finding Authorization By Token_STATE: {}", token);

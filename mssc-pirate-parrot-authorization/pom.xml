@@ -171,9 +171,6 @@
                             <password>${env.DOCKER_PASSWORD}</password>
                         </auth>
                     </to>
-<!--                    <container>-->
-<!--                        <mainClass>com.example.MainClass</mainClass>-->
-<!--                    </container>-->
                 </configuration>
             </plugin>
         </plugins>
